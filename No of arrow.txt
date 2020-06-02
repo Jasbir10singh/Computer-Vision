@@ -1,0 +1,27 @@
+import cv2 
+gray = cv2.imread('text1.png',0)
+
+width = 800
+height = 800
+dim = (width, height)
+# resize image
+resized1 = cv2.resize(gray, dim, interpolation = cv2.INTER_AREA)
+cv2.imshow('resizedoriginal',resized1) 
+# threshold 
+th, threshed = cv2.threshold(gray, 100, 255,cv2.THRESH_BINARY_INV|cv2.THRESH_OTSU)  
+# findcontours 
+cnts = cv2.findContours(threshed, cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[-2]  
+
+ret,thresh = cv2.threshold(resized1,127,255,1)
+               
+# filter by area 
+s1 = 6
+s2 = 20
+xcnts = [] 
+for cnt in cnts: 
+    if s1<cv2.contourArea(cnt) <s2: 
+        xcnts.append(cnt) 
+print("\nArrows number: {}".format(len(xcnts)))
+cv2.imshow('number',thresh) 
+cv2.waitKey(60000)
+cv2.destroyAllWindows()
