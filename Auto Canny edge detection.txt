@@ -1,0 +1,27 @@
+import cv2
+import imutils
+import argparse
+import glob
+import numpy as np
+
+def auto_canny(img,sigma=0.33):
+    v=np.median(img)# compute the median of single channel pixel intensities
+    # apply automatic edged detection using computed median
+    lower= int(max(0,(1.0 - sigma)* v))
+    upper = int(min(255, (1.0 + sigma)* v))
+    edged = cv2.Canny(img,lower,upper)
+    return edged
+    
+
+image = cv2.imread('text1.png')
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+
+wide = cv2.Canny(blurred, 10, 200)
+tight = cv2.Canny(blurred, 225, 250)
+auto = auto_canny(blurred)
+
+cv2.imshow("Original", image)
+cv2.imshow("Edges", np.hstack([wide, tight, auto]))
+cv2.waitKey(0)
+cv2.destroyAllWindows() 
