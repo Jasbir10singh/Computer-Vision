@@ -1,0 +1,26 @@
+import fitz # reading the image from pdf file "PyMuPDF" to use this import fitz pip install PyMuPDF
+doc = fitz.open("Airbus.pdf")
+page = doc.loadPage(2)
+pix = page.getPixmap(2)
+pix.writeImage("page-%i.png" % 2) # reading 3rd image from the pdf
+-------------------------------------------------------------------------
+a1 = page.searchFor("150") # it exist only once so print area of one number in page
+a2 = page.searchFor("31")# it doesn't exist in the page 3 so no area
+a3 = page.searchFor("235")#it comes twice so two area
+a4 = page.searchFor("10") # 10 comes with 100,210 and many so it count all the number and area 
+a5 = page.searchFor("15") # 15 comes with 150,15 and 155 so 3 times
+text = page.getText("text") # print all the text from image but if from one number 2 arrow it's doesn't count both
+#xml = page.getText("xml")
+print(a1)
+print(a2)
+print(a3)
+print(a4)
+print(a5)
+print(text)
+#print(xml)
+-------------------------------------------------------------------------
+import numpy #finding the centroid of the rectangle area for 150
+coords = (135.0399932861328, 241.93893432617188, 152.1537322998047, 253.31398010253906)
+
+centerx,centery = ( numpy.average(coords[:2]),numpy.average(coords[2:]))
+centerx,centery
