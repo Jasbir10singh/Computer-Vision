@@ -1,0 +1,27 @@
+import numpy as np
+import cv2
+
+centroids = np.array([[265., 751.],
+                      [383., 681.],
+                      [386., 889.],
+                      [434., 490.],
+                      [446., 444.],
+                      [450., 451.],
+                      [539., 1365.],
+                      [571., 1365.],
+                      [630., 645.],
+                      [721., 1365.],
+                      [767., 70.],
+                      [767., 82.],
+                      [767., 636.]])
+
+canvas = np.ones((1000, 1000, 3), dtype=np.uint8) * 255
+CIRCLE_RADIUS = 10
+CIRCLE_THICKNESS = 2
+COLOR_RED = np.array([0, 0, 255])
+
+for c in centroids:
+    o_c = (int(c[0]), int(c[1]))
+    cv2.circle(canvas, o_c, CIRCLE_RADIUS, COLOR_RED, CIRCLE_THICKNESS)
+
+cv2.imwrite("./debug.png", canvas)
