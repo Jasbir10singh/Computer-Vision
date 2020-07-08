@@ -1,0 +1,34 @@
+#ORB Oriented fast and rotated brief
+import cv2
+import numpy as np
+import os
+
+img1 = cv2.imread("calculator.jpg")
+img2 = cv2.imread("calculator1.jpg")
+
+orb = cv2.ORB_create(nfeatures=1000) #defined feature match for 1000 we can change accordinging to use
+
+kp1, des1 = orb.detectAndCompute(img1,None) #defining keypoints and discriptor
+kp2, des2 = orb.detectAndCompute(img2,None)
+#print(des1) its a bunch of array for each feature
+#print(des1[0]) #give the 1 feature details with 32 different feature value
+#print(des1.shape) #(1000,32) give the shape of the feature with 32 values 
+imgKp1 = cv2.drawKeypoints(img1,kp1,None) #draw keypoints in images 
+imgKp2 = cv2.drawKeypoints(img2,kp2,None)
+
+bf = cv2.BFMatcher() #Burte force matches
+matches = bf.knnMatch(des1,des2,k=2) #knn burte force matches with k value to 2
+
+good = []
+for m,n in matches:
+    if m.distance < 0.75*n.distance:
+        good.append([m])
+print(len(good)) #total length of the matches "good matches"
+img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good,None,flags=2)
+cv2.imshow('img1',img1)
+cv2.imshow('img2',img2)
+cv2.imshow('img3',img3)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
