@@ -1,0 +1,16 @@
+# compare imges and display differences 
+import cv2
+import numpy as np 
+
+image1 = cv2.imread('calculator.jpg')
+image2 = cv2.imread('calculator1.jpg')
+
+difference = cv2.subtract(image1,image2)
+
+result = not np.any(difference) # if difference is all zero it returns false 
+
+if result is True:
+    print("The image are same")
+else:
+    cv2.imwrite("diff.jpg",difference)
+    print("The image are different")
