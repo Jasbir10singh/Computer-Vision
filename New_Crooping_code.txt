@@ -1,0 +1,90 @@
+def threshold_checker(x, threshold):
+    if len(np.where((x > 180) & (x < 220))[0]) < threshold*len(x):
+        return 0
+    else:
+        return 1
+
+def image_Cropping(Image_byteary, Return_Colour=False):
+ 
+    image = cv2.imdecode(np.frombuffer(Image_byteary, np.uint8), -1)
+    colour_image = image.copy()
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+ 
+    shadow_pos = np.where(np.apply_along_axis(
+        threshold_checker, 1, image, .8))[0]
+    shadow_pos = shadow_pos[shadow_pos > 200]
+ 
+    if Return_Colour:
+        if shadow_pos.size != 0:
+            last_hz_pos = np.max(shadow_pos)
+            if np.any(np.any(image[last_hz_pos:, :] < 130, axis=1)):
+                im = colour_image.copy()
+            else:
+                im = colour_image[:last_hz_pos, :, :]
+ 
+        else:
+            im = colour_image.copy()
+    else:
+        if shadow_pos.size != 0:
+            last_hz_pos = np.max(shadow_pos)
+            if np.any(np.any(image[last_hz_pos:, :] < 130, axis=1)):
+                im = image.copy()
+            else:
+                im = image[:last_hz_pos, :]
+ 
+        else:
+            im = image.copy()
+ 
+    success, encoded_image = cv2.imencode('.png', im)
+    imgByteArr = encoded_image.tobytes()
+ 
+    '''angle = getAngleRotationHough(imgByteArr)
+    if -10 < angle <= 10:
+        rotated_image = rotateImage(im, angle)
+    else:
+        rotated_image = im.copy()'''
+    rotated_image = im.copy()
+ 
+    # vertical cropping
+    ver_cropped = cropping(rotated_image, ax=1, Return_Colour=Return_Colour)
+ 
+    # Horizontal cropping
+    #cropped = cropping(ver_cropped,ax = 0)
+ 
+    return ver_cropped
+ 
+def cropping(Image, ax, Return_Colour=False):
+    ''' ax = 1 for vertical cropping; ax= 0 for horizontal cropping'''
+    Colour_Image = Image.copy()
+    if len(Colour_Image.shape) == 3:
+        Image = cv2.cvtColor(Image, cv2.COLOR_BGR2GRAY)
+    Image_BW = cv2.threshold(
+        Image, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+ 
+    temp_matrix = np.diff(Image_BW, n=1, axis=eval('0 if ax==1 else 1'))
+    temp_matrix = np.abs(temp_matrix)
+    temp_array = np.sum(temp_matrix, axis=eval('0 if ax==1 else 1'))
+ 
+    nonempty_lines_ind = np.where(temp_array > 3*255)[0]
+    nonempty_lines_ind_diff = np.diff(nonempty_lines_ind)
+ 
+    if len(nonempty_lines_ind) != 0:
+        delcol = list(range(nonempty_lines_ind[0]))
+        for i in np.where(nonempty_lines_ind_diff > 100)[0].tolist():
+            delcol = delcol + \
+                list(range(nonempty_lines_ind[i] +
+                           1, nonempty_lines_ind[i+1], 1))
+        delcol = delcol + list(range(nonempty_lines_ind[-1], Image.shape[ax]))
+ 
+        cropped = np.delete(Image, delcol, axis=ax)
+        if Return_Colour & (len(Colour_Image.shape) == 3):
+            cropped_colour = np.delete(Colour_Image, delcol, axis=ax)
+            return cropped_colour
+        else:
+            return cropped
+    else:
+        if Return_Colour:
+            return Colour_Image
+        else:
+            return Image
