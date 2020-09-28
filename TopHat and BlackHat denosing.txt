@@ -1,0 +1,16 @@
+import os
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# applying top hat approch
+
+img = cv2.imread('Image_6.png',0)
+# Structuring element
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(25,25))
+# Apply the top hat transform
+tophat = cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
+# Apply the black hat transform
+blackhat = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
+cv2.imwrite('TopHat_6.jpg', tophat)
+cv2.imwrite('Blackhat_6.jpg',blackhat)
