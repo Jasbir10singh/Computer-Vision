@@ -1,0 +1,18 @@
+import os
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# applying Gradient 
+img = cv2.imread('Image_1.png',0)
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3,3))
+ 
+# Approach-1: Perform erosion and dilation separately and then subtract
+erosion = cv2.erode(img, kernel, iterations = 1)
+dilation = cv2.dilate(img, kernel, iterations=1)
+gradient1 = dilation - erosion
+cv2.imwrite('gradient1.jpg',gradient1)
+ 
+# Approach-2: Use cv2.morphologyEx()
+gradient = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+cv2.imwrite('gradient.jpg',gradient)
