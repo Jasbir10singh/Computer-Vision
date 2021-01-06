@@ -1,0 +1,20 @@
+import cv2
+import numpy as np
+from PIL import Image
+import io
+
+imgByteArr = open('C:/Jasbir/Data Science Project Capgemini/I&D/IAAI/28-12-2020/AZ analysis/New/CAP1_Title_13059960_234140_1_0_Resized.png', "rb").read()
+
+pil_img = Image.open(io.BytesIO(imgByteArr))
+
+img = np.array(pil_img)
+
+#img = cv2.imread("CAP1_Title_13059960_234140_1_0_Resized.png")
+
+alpha = 2.0
+beta = -80
+
+new = alpha * img + beta
+new = np.clip(new, 0, 255).astype(np.uint8)
+
+cv2.imwrite("cleaned.png", new)
