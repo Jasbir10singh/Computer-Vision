@@ -1,0 +1,42 @@
+import cv2
+
+# Reading the image
+source = cv2.imread('C:/Jasbir/Data Science Project Capgemini/I&D/IAAI/11-01-2021/ScaleImage/11187603_2322035_1_0_Custom.png')
+
+print(source.shape)
+
+#scaleX is scale factor in x direction
+#scaleY is scale factor in y direction
+scaleX = 0.5
+scaleY = 0.5
+
+
+# Scaling Down the image 0.5 times
+scaleDown = cv2.resize(source, None, fx= scaleX, fy= scaleY, interpolation= cv2.INTER_LINEAR)
+
+print(scaleDown.shape)
+
+# Scaling up the image 1.5 times
+scaleUp = cv2.resize(source, None, fx= scaleX*3, fy= scaleY*3, interpolation= cv2.INTER_LINEAR)
+print(scaleUp.shape)
+width =1130
+height =1600
+dim = (width, height)
+resized = cv2.resize(source, dim, interpolation = cv2.INTER_AREA)
+print(resized.shape)
+
+
+
+#Cropped Image
+#crop = source[50:150,20:200]
+
+# Displaying all the images
+cv2.imshow("Original", source)
+cv2.imshow("Scaled Down", scaleDown)
+cv2.imshow("Scaled Up", scaleUp)
+cv2.imshow("Resized",resized)
+cv2.imwrite("C:/Jasbir/Data Science Project Capgemini/I&D/IAAI/11-01-2021/ScaleImage/Output/1.png",scaleUp)
+#cv2.imshow("Cropped Image",crop)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
