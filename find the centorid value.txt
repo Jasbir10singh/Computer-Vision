@@ -1,0 +1,53 @@
+import cv2
+import math
+img = cv2.imread('C:/Jasbir/Data Science Project Capgemini/I&D/IAAI/11-01-2021/IN_Signature/Image_7.png')
+#cv2.imshow('image',img)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+crop = img[368:384,3:128] #[y(y1):y+h(y2),x(x1):x+w(x2)]
+
+#cv2.imshow("Cropped Image",crop)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
+
+#ret,thresh = cv2.threshold(crop,127,255,0) #convert the image into binary
+#M = cv2.moments(thresh) #calculate the moment of binary image
+
+#calculate x,y center of the center
+#cX = int(M["m10"] / M["m00"])
+#cY = int(M["m01"] / M["m00"])
+
+#print('cX')
+#print('cY')
+
+
+gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+
+#blurred = cv2.GaussianBlur(crop, (5, 5), 0)
+#thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+
+
+# find contours in the thresholded image
+cnts = cv2.findContours(gray, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+cnts = cnts[0] 
+#print(cnts)
+
+# loop over the contours
+for c in cnts:
+    # compute the center of the contour
+    M = cv2.moments(c)
+    cX = int(M["m10"] / M["m00"])
+    cY = int(M["m01"] / M["m00"]) 
+    
+print(cX)
+print(cY)
+
+# we can calculate the angle and define the direction from two points x,y,w,h and x1,y1,w1,h1 and store them in vector v1 and v2
+
+#def angle(v1, v2): 
+    #return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
+    
+#if probabable sign between 20 degree to 130 degree direction is up, if 140 to 140 to 220 then right
+# if 220 to 340 then bottom and from 340 to 20 degree than left.
+
