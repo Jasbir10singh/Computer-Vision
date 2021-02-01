@@ -1,0 +1,22 @@
+def direction_lookup(destination_x, origin_x, destination_y, origin_y):
+    deltaX = destination_x - origin_x
+    deltaY = destination_y - origin_y
+    degrees_temp = math.atan2(deltaX, deltaY)/math.pi*180
+    if degrees_temp < 0:
+        degrees_final = 360 + degrees_temp
+    else:
+        degrees_final = degrees_temp
+    direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"]
+    lookup = round(degrees_final / 45)
+    #if direction[lookup]== "N" or "NW" or "NE":
+       # new_direction = direction[lookup]
+       # print(new_direction)
+    if 45 <= degrees_final <= 135:
+        new_direction = "Up"
+    elif 136 <= degrees_final <= 180:
+        new_direction = 'right'
+    elif 181 <= degrees_final <= 270:
+        new_direction = 'down'
+    elif 271 <= degrees_final <=44:
+        new_direction ='left'
+    return direction[lookup], degrees_final, new_direction
